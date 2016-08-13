@@ -16,7 +16,8 @@ class ViewController: UIViewController {
 
         let _ = Ladder.Fir(appID: "", token: "")
 
-        let appStore = Ladder.AppStore(appID: "")
+        let appID = "333903271"
+        let appStore = Ladder.AppStore(appID: appID)
 
         appStore.check() { comparisonResult, releaseNotes in
 
@@ -28,7 +29,11 @@ class ViewController: UIViewController {
 
             let updateAction = UIAlertAction(title: "Update", style: .Default, handler: {
                 _ in
-//                    UIApplication.sharedApplication().openURL("")
+
+                if let URL = NSURL(string: "itms-apps://itunes.apple.com/app/id\(appID)") {
+                    UIApplication.sharedApplication().openURL(URL)
+                }
+
             })
 
             let cancelAction = UIAlertAction(title: "Cancel", style: .Default, handler: nil)
