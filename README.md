@@ -7,7 +7,7 @@
 
 Check version for AppStore or Fir.
 
-![version.png](https://raw.githubusercontent.com/Limon-O-O/Ladder/master/images/version.png)
+![version.png](https://raw.githubusercontent.com/Limon-O-O/Ladder/master/images/v.png)
 
 # Requirements
 
