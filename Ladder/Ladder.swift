@@ -36,7 +36,7 @@ public enum Ladder {
         }
     }
 
-    public static var interval: Interval = .Day
+    public static var interval: Interval = .None
 
     public func check(completion: (comparisonResult: NSComparisonResult, releaseNotes: String?) -> Void) {
 
