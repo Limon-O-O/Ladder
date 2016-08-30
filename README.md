@@ -5,7 +5,7 @@
 <a href="https://raw.githubusercontent.com/Limon-O-O/Ladder/master/LICENSE"><img src="https://img.shields.io/cocoapods/l/Ladder.svg?style=flat"></a>
 </p>
 
-Check version for AppStore or Fir by date.
+Checking app's version on AppStore or Fir.im every particular interval of time.
 
 ![version.png](https://raw.githubusercontent.com/Limon-O-O/Ladder/master/images/v.png)
 
