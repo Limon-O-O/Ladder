@@ -29,7 +29,7 @@ Ladder.AppStore(appID: appID).check() { comparisonResult, releaseNotes in
 ## CocoaPods
 
 ```ruby
-pod 'Ladder', '~> 0.1'
+pod 'Ladder', '~> 0.2'
 ```
 
 

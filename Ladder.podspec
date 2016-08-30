@@ -1,11 +1,11 @@
 Pod::Spec.new do |s|
 
   s.name        = "Ladder"
-  s.version     = "0.1"
-  s.summary     = "Check version"
+  s.version     = "0.2"
+  s.summary     = "Check version for AppStore or Fir"
 
   s.description = <<-DESC
-                    Check version for AppStore or Fir.
+                    Check version for AppStore or Fir by date.
                   DESC
 
   s.homepage    = "https://github.com/Limon-O-O/Ladder"
