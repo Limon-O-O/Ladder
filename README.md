@@ -5,19 +5,28 @@
 <a href="https://raw.githubusercontent.com/Limon-O-O/Ladder/master/LICENSE"><img src="https://img.shields.io/cocoapods/l/Ladder.svg?style=flat"></a>
 </p>
 
-Check version for AppStore or Fir.
+Check version for AppStore or Fir by date.
 
 ![version.png](https://raw.githubusercontent.com/Limon-O-O/Ladder/master/images/v.png)
 
-# Requirements
+## Requirements
 
 iOS 8.0
 
 Swift 2.0
 
+## Usage
+
+```swift
+let appID = "333903271"
+Ladder.interval = .Day // check update interval
+Ladder.AppStore(appID: appID).check() { comparisonResult, releaseNotes in
+}
+```
+
 ## Installation
 
-### CocoaPods
+## CocoaPods
 
 ```ruby
 pod 'Ladder', '~> 0.1'
@@ -30,3 +39,5 @@ Contact me on [Twitter](https://twitter.com/Limon______) or [Weibo](http://weibo
 
 ## License
 Ladder is available under the MIT license. See the LICENSE file for more info.
+
+
