@@ -19,6 +19,9 @@ class ViewController: UIViewController {
         let appID = "333903271"
         let appStore = Ladder.AppStore(appID: appID)
 
+        // Check update interval
+        Ladder.interval = .None
+
         appStore.check() { comparisonResult, releaseNotes in
 
             guard comparisonResult == .OrderedDescending else { return }

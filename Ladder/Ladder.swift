@@ -13,7 +13,34 @@ public enum Ladder {
     case AppStore(appID: String)
     case Fir(appID: String, token: String)
 
+    public enum Interval {
+        case None
+        case Day
+        case Week
+        case Month
+        case Custom(minute: Int)
+
+        var value: Int {
+            switch self {
+            case .None:
+                return 0
+            case .Day:
+                return 24 * 60
+            case .Week:
+                return 24 * 60 * 7
+            case .Month:
+                return 24 * 60 * 7 * 30
+            case let .Custom(minute):
+                return max(minute, 0)
+            }
+        }
+    }
+
+    public static var interval: Interval = .Day
+
     public func check(completion: (comparisonResult: NSComparisonResult, releaseNotes: String?) -> Void) {
+
+        guard needCheck else { return }
 
         switch self {
 
@@ -23,6 +50,7 @@ public enum Ladder {
 
             checkUpdate(from: remote) { comparisonResult, releaseNotes in
                 dispatch_async(dispatch_get_main_queue()) {
+                    self.checkedDate = NSDate()
                     completion(comparisonResult: comparisonResult, releaseNotes: releaseNotes)
                 }
             }
@@ -33,6 +61,7 @@ public enum Ladder {
 
             checkUpdate(from: remote) { comparisonResult, releaseNotes in
                 dispatch_async(dispatch_get_main_queue()) {
+                    self.checkedDate = NSDate()
                     completion(comparisonResult: comparisonResult, releaseNotes: releaseNotes)
                 }
             }
@@ -94,6 +123,44 @@ public enum Ladder {
         
         task.resume()
     }
+}
+
+extension Ladder {
+
+    private var checkedDate: NSDate? {
+
+        get {
+            let timeInterval = (NSUserDefaults(suiteName: "top.limon.ladder")?.objectForKey("checkedDateKey") as? Double) ?? 0.0
+            return NSDate(timeIntervalSince1970: timeInterval)
+        }
+
+        nonmutating set {
+            NSUserDefaults(suiteName: "top.limon.ladder")?.setDouble(newValue?.timeIntervalSince1970 ?? 0.0, forKey: "checkedDateKey")
+        }
+    }
+
+    private var needCheck: Bool {
+
+        switch Ladder.interval {
+
+        case .None:
+            return true
+
+        default:
+
+            guard let unwrappedCheckedDate = checkedDate else { return true }
+
+            func minutesBetweenDates(oldDate: NSDate, currentDate: NSDate) -> Int {
+                let calendar = NSCalendar.currentCalendar()
+                let components = calendar.components(.Minute, fromDate: oldDate, toDate: currentDate, options: .MatchFirst)
+                return components.minute
+            }
+
+            let passedMinutes = minutesBetweenDates(unwrappedCheckedDate, currentDate: NSDate())
+            return !(passedMinutes < Ladder.interval.value)
+        }
+    }
+
 }
 
 private extension NSBundle {
