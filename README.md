@@ -1,7 +1,7 @@
 # Ladder
 
 <p>
-<a href="http://cocoadocs.org/docsets/Ladder"><img src="https://img.shields.io/cocoapods/v/KingfisherExtension.svg?style=flat"></a>
+<a href="http://cocoadocs.org/docsets/Ladder"><img src="https://img.shields.io/cocoapods/v/Ladder.svg?style=flat"></a>
 <a href="https://github.com/Carthage/Carthage/"><img src="https://img.shields.io/badge/Carthage-compatible-4BC51D.svg?style=flat"></a>
 <a href="https://raw.githubusercontent.com/Limon-O-O/Ladder/master/LICENSE"><img src="https://img.shields.io/cocoapods/l/Ladder.svg?style=flat"></a>
 </p>
