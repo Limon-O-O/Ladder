@@ -14,36 +14,36 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        let _ = Ladder.Fir(appID: "", token: "")
+        let _ = Ladder.fir(appID: "", token: "")
 
         let appID = "333903271"
-        let appStore = Ladder.AppStore(appID: appID)
+        let appStore = Ladder.appStore(appID: appID)
 
         // Check update interval
-        Ladder.interval = .None
+        Ladder.interval = .none
 
         appStore.check() { comparisonResult, releaseNotes in
 
-            guard comparisonResult == .OrderedDescending else { return }
+            guard comparisonResult == .orderedDescending else { return }
 
             let message = releaseNotes ?? "New Version!"
 
-            let alert = UIAlertController(title: "Ladder", message: message, preferredStyle: .Alert)
+            let alert = UIAlertController(title: "Ladder", message: message, preferredStyle: .alert)
 
-            let updateAction = UIAlertAction(title: "Update", style: .Default, handler: {
+            let updateAction = UIAlertAction(title: "Update", style: .default, handler: {
                 _ in
 
-                if let URL = NSURL(string: "itms-apps://itunes.apple.com/app/id\(appID)") {
-                    UIApplication.sharedApplication().openURL(URL)
+                if let URL = URL(string: "itms-apps://itunes.apple.com/app/id\(appID)") {
+                    UIApplication.shared.openURL(URL as URL)
                 }
 
             })
 
-            let cancelAction = UIAlertAction(title: "Cancel", style: .Default, handler: nil)
+            let cancelAction = UIAlertAction(title: "Cancel", style: .default, handler: nil)
             alert.addAction(updateAction)
             alert.addAction(cancelAction)
 
-            UIApplication.sharedApplication().keyWindow?.rootViewController?.presentViewController(alert, animated: true, completion: nil)
+            UIApplication.shared.keyWindow?.rootViewController?.present(alert, animated: true, completion: nil)
             
         }
 
