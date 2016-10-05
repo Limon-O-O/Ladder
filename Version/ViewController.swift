@@ -15,6 +15,7 @@ class ViewController: UIViewController {
         super.viewDidLoad()
 
         let _ = Ladder.fir(appID: "", token: "")
+        let _ = Ladder.bugly(appID: "", appKey: "", pid: 2, start: 0)
 
         let appID = "333903271"
         let appStore = Ladder.appStore(appID: appID)

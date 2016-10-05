@@ -12,6 +12,7 @@ public enum Ladder {
 
     case appStore(appID: String)
     case fir(appID: String, token: String)
+    case bugly(appID: String, appKey: String, pid: Int, start: Int)
 
     public enum Interval {
         case none
@@ -66,6 +67,17 @@ public enum Ladder {
                 }
             }
 
+        case let .bugly(appID, appKey, pid, start):
+
+            let remote = "https://api.bugly.qq.com/beta/apiv1/exp_list?app_id=\(appID)&pid=\(pid)&app_key=\(appKey)&start=\(start)&limit=100"
+
+            checkUpdate(from: remote) { comparisonResult, releaseNotes in
+                DispatchQueue.main.async {
+                    self.checkedDate = Date()
+                    completion(comparisonResult, releaseNotes)
+                }
+            }
+
         }
     }
 
@@ -83,18 +95,25 @@ public enum Ladder {
 
         let task = session.dataTask(with: URL, completionHandler: { data, response, error in
 
-            guard let unwrappedData = data else { return }
-
-            guard let JSONDict = try? JSONSerialization.jsonObject(with: unwrappedData, options: .mutableContainers) as? NSDictionary else { return }
-
             var releaseNotes: String?
-            var comparisonResult: ComparisonResult
+            var comparisonResult: ComparisonResult = .orderedSame
+
+            defer {
+                completion(comparisonResult, releaseNotes)
+            }
+
+            guard
+                  let unwrappedData = data,
+                  let jsonDictBuffer = try? JSONSerialization.jsonObject(with: unwrappedData, options: .mutableContainers) as? [String: Any],
+                  let jsonDict = jsonDictBuffer else {
+                    return
+            }
 
             switch self {
 
             case .appStore:
 
-                guard let infoDict = (JSONDict?["results"] as? [[String: AnyObject]])?.first else { return }
+                guard let infoDict = (jsonDict["results"] as? [[String: AnyObject]])?.first else { return }
 
                 guard let version = infoDict["version"] as? String else { return }
 
@@ -103,22 +122,32 @@ public enum Ladder {
 
             case .fir:
 
-                guard let version = JSONDict?["versionShort"] as? String else { return }
+                guard let version = jsonDict["versionShort"] as? String else { return }
 
                 comparisonResult = version.compare(localVersion)
-                releaseNotes = JSONDict?["changelog"] as? String
+                releaseNotes = jsonDict["changelog"] as? String
 
                 if comparisonResult == .orderedSame {
 
-                    guard let build = JSONDict?["build"] as? String, let currentBuild = Bundle.main.ladder_localBuild else {
+                    guard let build = jsonDict["build"] as? String, let currentBuild = Bundle.main.ladder_localBuild else {
                         break
                     }
 
                     comparisonResult = build.compare(currentBuild)
                 }
-            }
 
-            completion(comparisonResult, releaseNotes)
+            case .bugly:
+
+                guard
+                      let dataDict = jsonDict["data"] as? [String: Any],
+                      let info = (dataDict["list"] as? [[String: Any]])?.first,
+                      let version = info["version"] as? String else {
+                        return
+                }
+
+                comparisonResult = version.compare(localVersion)
+                releaseNotes = info["description"] as? String
+            }
         }) 
         
         task.resume()
