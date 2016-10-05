@@ -23,7 +23,7 @@ class ViewController: UIViewController {
         // Check update interval
         Ladder.interval = .none
 
-        appStore.check() { comparisonResult, releaseNotes in
+        appStore.check() { comparisonResult, releaseNotes, info in
 
             guard comparisonResult == .orderedDescending else { return }
 

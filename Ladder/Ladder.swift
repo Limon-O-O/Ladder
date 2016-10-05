@@ -39,7 +39,7 @@ public enum Ladder {
 
     public static var interval: Interval = .none
 
-    public func check(_ completion: @escaping (_ comparisonResult: ComparisonResult, _ releaseNotes: String?) -> Void) {
+    public func check(_ completion: @escaping (_ comparisonResult: ComparisonResult, _ releaseNotes: String?, _ info: [String: Any]?) -> Void) {
 
         guard needCheck else { return }
 
@@ -49,10 +49,10 @@ public enum Ladder {
 
             let remote = "https://itunes.apple.com/cn/lookup?id=\(appID)"
 
-            checkUpdate(from: remote) { comparisonResult, releaseNotes in
+            checkUpdate(from: remote) { comparisonResult, releaseNotes, info in
                 DispatchQueue.main.async {
                     self.checkedDate = Date()
-                    completion(comparisonResult, releaseNotes)
+                    completion(comparisonResult, releaseNotes, info)
                 }
             }
 
@@ -60,10 +60,10 @@ public enum Ladder {
 
             let remote = "https://api.fir.im/apps/latest/\(appID)?api_token=\(token)"
 
-            checkUpdate(from: remote) { comparisonResult, releaseNotes in
+            checkUpdate(from: remote) { comparisonResult, releaseNotes, info in
                 DispatchQueue.main.async {
                     self.checkedDate = Date()
-                    completion(comparisonResult, releaseNotes)
+                    completion(comparisonResult, releaseNotes, info)
                 }
             }
 
@@ -71,17 +71,17 @@ public enum Ladder {
 
             let remote = "https://api.bugly.qq.com/beta/apiv1/exp_list?app_id=\(appID)&pid=\(pid)&app_key=\(appKey)&start=\(start)&limit=100"
 
-            checkUpdate(from: remote) { comparisonResult, releaseNotes in
+            checkUpdate(from: remote) { comparisonResult, releaseNotes, info in
                 DispatchQueue.main.async {
                     self.checkedDate = Date()
-                    completion(comparisonResult, releaseNotes)
+                    completion(comparisonResult, releaseNotes, info)
                 }
             }
 
         }
     }
 
-    private func checkUpdate(from URLString: String, completion: @escaping (_ comparisonResult: ComparisonResult, _ releaseNotes: String?) -> Void) {
+    private func checkUpdate(from URLString: String, completion: @escaping (_ comparisonResult: ComparisonResult, _ releaseNotes: String?, _ info: [String: Any]?) -> Void) {
 
         guard let URL = URL(string: URLString) else { return }
         guard let localVersion = Bundle.main.ladder_localVersion else { return }
@@ -95,11 +95,12 @@ public enum Ladder {
 
         let task = session.dataTask(with: URL, completionHandler: { data, response, error in
 
+            var info: [String: Any]?
             var releaseNotes: String?
             var comparisonResult: ComparisonResult = .orderedSame
 
             defer {
-                completion(comparisonResult, releaseNotes)
+                completion(comparisonResult, releaseNotes, info)
             }
 
             guard
@@ -117,6 +118,7 @@ public enum Ladder {
 
                 guard let version = infoDict["version"] as? String else { return }
 
+                info = infoDict
                 comparisonResult = version.compare(localVersion)
                 releaseNotes = infoDict["releaseNotes"] as? String
 
@@ -140,13 +142,14 @@ public enum Ladder {
 
                 guard
                       let dataDict = jsonDict["data"] as? [String: Any],
-                      let info = (dataDict["list"] as? [[String: Any]])?.first,
-                      let version = info["version"] as? String else {
+                      let infoDict = (dataDict["list"] as? [[String: Any]])?.first,
+                      let version = infoDict["version"] as? String else {
                         return
                 }
 
+                info = infoDict
                 comparisonResult = version.compare(localVersion)
-                releaseNotes = info["description"] as? String
+                releaseNotes = infoDict["description"] as? String
             }
         }) 
         
