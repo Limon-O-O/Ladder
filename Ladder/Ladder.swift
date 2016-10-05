@@ -126,6 +126,7 @@ public enum Ladder {
 
                 guard let version = jsonDict["versionShort"] as? String else { return }
 
+                info = jsonDict
                 comparisonResult = version.compare(localVersion)
                 releaseNotes = jsonDict["changelog"] as? String
 
