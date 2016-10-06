@@ -1,7 +1,7 @@
 Pod::Spec.new do |s|
 
   s.name        = "Ladder"
-  s.version     = "0.3.2"
+  s.version     = "0.3.3"
   s.summary     = "Checking app's version on the AppStore or Fir.im every particular time interval"
 
   s.description = <<-DESC
