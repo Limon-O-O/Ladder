@@ -143,7 +143,26 @@ public enum Ladder {
 
                 guard
                       let dataDict = jsonDict["data"] as? [String: Any],
-                      let infoDict = (dataDict["list"] as? [[String: Any]])?.first,
+                      let listBuffer = dataDict["list"] as? [[String: Any]] else {
+                        return
+                }
+
+
+                let list = listBuffer.sorted() {
+
+                    guard
+                          let version1String = $0["version"] as? String,
+                          let version1 = Int(version1String),
+                          let version2String = $1["version"] as? String,
+                          let version2 = Int(version2String) else {
+                            return false
+                    }
+
+                    return version1 > version2
+                }
+
+                guard
+                      let infoDict = list.first,
                       let build = infoDict["version"] as? String,
                       let localBuild = Bundle.main.ladder_localBuild else {
                         return
