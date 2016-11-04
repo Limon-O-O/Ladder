@@ -6,7 +6,7 @@
 <a href="https://raw.githubusercontent.com/Limon-O-O/Ladder/master/LICENSE"><img src="https://img.shields.io/cocoapods/l/Ladder.svg?style=flat"></a>
 </p>
 
-Checking app's version on the AppStore or Fir.im every particular time interval.
+Checking app's version on the AppStore, bugly.qq or fir.im every particular time interval.
 
 ![version.png](https://raw.githubusercontent.com/Limon-O-O/Ladder/master/images/v.png)
 
@@ -30,7 +30,7 @@ Ladder.AppStore(appID: appID).check() { comparisonResult, releaseNotes in
 ### CocoaPods
 
 ```ruby
-pod 'Ladder', '~> 0.3.3'
+pod 'Ladder', '~> 1.0.0'
 ```
 
 ### Carthage
@@ -45,3 +45,5 @@ Contact me on [Twitter](https://twitter.com/Limon______) or [Weibo](http://weibo
 
 ## License
 Ladder is available under the MIT license. See the LICENSE file for more info.
+
+
