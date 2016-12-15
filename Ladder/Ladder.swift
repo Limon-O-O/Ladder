@@ -132,11 +132,18 @@ public enum Ladder {
 
                 if comparisonResult == .orderedSame {
 
-                    guard let build = jsonDict["build"] as? String, let localBuild = Bundle.main.ladder_localBuild else {
-                        break
+                    guard
+                        let buildString = jsonDict["build"] as? String,
+                        let build = Int(buildString),
+                        let localBuildString = Bundle.main.ladder_localBuild,
+                        let localBuild = Int(localBuildString) else {
+                            break
                     }
 
-                    comparisonResult = build.compare(localBuild)
+                    comparisonResult = build > localBuild ? .orderedDescending : .orderedAscending
+                    if build == localBuild {
+                        comparisonResult = .orderedSame
+                    }
                 }
 
             case .bugly:
@@ -162,14 +169,19 @@ public enum Ladder {
                 }
 
                 guard
-                      let infoDict = list.first,
-                      let build = infoDict["version"] as? String,
-                      let localBuild = Bundle.main.ladder_localBuild else {
+                    let infoDict = list.first,
+                    let buildString = infoDict["version"] as? String,
+                    let build = Int(buildString),
+                    let localBuildString = Bundle.main.ladder_localBuild,
+                    let localBuild = Int(localBuildString) else {
                         return
                 }
 
                 info = infoDict
-                comparisonResult = build.compare(localBuild)
+                comparisonResult = build > localBuild ? .orderedDescending : .orderedAscending
+                if build == localBuild {
+                    comparisonResult = .orderedSame
+                }
                 releaseNotes = infoDict["description"] as? String
             }
         }) 
