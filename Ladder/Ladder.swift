@@ -100,6 +100,7 @@ public enum Ladder {
             var comparisonResult: ComparisonResult = .orderedSame
 
             defer {
+                session.finishTasksAndInvalidate()
                 completion(comparisonResult, releaseNotes, info)
             }
 
