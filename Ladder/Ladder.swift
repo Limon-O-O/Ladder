@@ -11,8 +11,8 @@ import Foundation
 public enum Ladder {
 
     case appStore(appID: String)
-    case fir(appID: String, token: String)
-    case bugly(appID: String, appKey: String, pid: Int, start: Int)
+    case fir(urlString: String)
+    case bugly(urlString: String)
 
     public enum Interval {
         case none
@@ -41,8 +41,6 @@ public enum Ladder {
 
     public func check(_ completion: @escaping (_ comparisonResult: ComparisonResult, _ releaseNotes: String?, _ info: [String: Any]?) -> Void) {
 
-        guard needCheck else { return }
-
         switch self {
 
         case let .appStore(appID):
@@ -56,22 +54,18 @@ public enum Ladder {
                 }
             }
 
-        case let .fir(appID, token):
+        case let .fir(urlString):
 
-            let remote = "https://api.fir.im/apps/latest/\(appID)?api_token=\(token)"
-
-            checkUpdate(from: remote) { comparisonResult, releaseNotes, info in
+            checkUpdate(from: urlString) { comparisonResult, releaseNotes, info in
                 DispatchQueue.main.async {
                     self.checkedDate = Date()
                     completion(comparisonResult, releaseNotes, info)
                 }
             }
 
-        case let .bugly(appID, appKey, pid, start):
+        case let .bugly(urlString):
 
-            let remote = "https://api.bugly.qq.com/beta/apiv1/exp_list?app_id=\(appID)&pid=\(pid)&app_key=\(appKey)&start=\(start)&limit=100"
-
-            checkUpdate(from: remote) { comparisonResult, releaseNotes, info in
+            checkUpdate(from: urlString) { comparisonResult, releaseNotes, info in
                 DispatchQueue.main.async {
                     self.checkedDate = Date()
                     completion(comparisonResult, releaseNotes, info)
@@ -205,7 +199,7 @@ extension Ladder {
         }
     }
 
-    fileprivate var needCheck: Bool {
+    public var needCheck: Bool {
 
         switch Ladder.interval {
 

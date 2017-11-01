@@ -14,14 +14,13 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        let _ = Ladder.fir(appID: "", token: "")
-        let _ = Ladder.bugly(appID: "", appKey: "", pid: 2, start: 0)
-
         let appID = "333903271"
         let appStore = Ladder.appStore(appID: appID)
 
         // Check update interval
         Ladder.interval = .none
+
+        guard appStore.needCheck else { return }
 
         appStore.check() { comparisonResult, releaseNotes, info in
 
@@ -45,7 +44,6 @@ class ViewController: UIViewController {
             alert.addAction(cancelAction)
 
             UIApplication.shared.keyWindow?.rootViewController?.present(alert, animated: true, completion: nil)
-            
         }
 
     }
